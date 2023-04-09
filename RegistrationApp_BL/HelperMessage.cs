@@ -8,7 +8,7 @@ namespace RegistrationApp_BL
 {
     public class HelperMessage
     {
-        //Test commit to git
+        
 
         public static class ResponceResult
         {

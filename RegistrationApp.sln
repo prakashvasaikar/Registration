@@ -5,9 +5,9 @@ VisualStudioVersion = 16.0.32126.315
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistrationApp", "RegistrationApp\RegistrationApp.csproj", "{8DC5F9D8-3ACD-423E-AC22-C1ED66EF941A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistrationApp_DL", "RegistrationApp_DL\RegistrationApp_DL.csproj", "{49B72710-D238-4039-93A8-5151E424E1EB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistrationApp_DL", "RegistrationApp_DL\RegistrationApp_DL.csproj", "{49B72710-D238-4039-93A8-5151E424E1EB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RegistrationApp_BL", "RegistrationApp_BL\RegistrationApp_BL.csproj", "{777BC300-C752-492E-B5BE-2FE4B39E285E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RegistrationApp_BL", "RegistrationApp_BL\RegistrationApp_BL.csproj", "{777BC300-C752-492E-B5BE-2FE4B39E285E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
