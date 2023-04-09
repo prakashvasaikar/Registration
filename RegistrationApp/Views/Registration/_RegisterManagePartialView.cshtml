@@ -1,0 +1,195 @@
+﻿
+@model RegistrationApp_DL.RegistrationModel
+
+@{ 
+    int intStateId = 0;
+    if (Model.refID_StateMst > 0)
+    {
+        intStateId = Model.refID_StateMst;
+    }
+}
+<div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4><strong class="text">Add New User Registration</strong> <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
+                @*<button type="button" class="close" data-dismiss="modal">&times;</button>*@
+            </div>
+            <div class="modal-body">
+                <form id="frmRegister">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row form-group">
+                                <label asp-for="Name" class="col-sm-3">Name <span style="color:red">*</span></label>
+                                <div class="col-sm-9">
+                                    <input asp-for="Name" maxlength="50" class="form-control" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label asp-for="Email" class="col-sm-3">Email <span style="color:red">*</span></label>
+                                <div class="col-sm-9">
+                                    <input asp-for="Email" maxlength="50" class="form-control" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label asp-for="Phone" class="col-sm-3">Phone </label>
+                                <div class="col-sm-9">
+                                    <input asp-for="Phone" onkeypress="return funIsNumber(event)" maxlength="10" class="form-control" autocomplete="off" />
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label asp-for="Address" class="col-sm-3">Address </label>
+                                <div class="col-sm-9">
+                                    <textarea type="text" asp-for="Address" maxlength="200" class="form-control" autocomplete="off" >
+</textarea>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label asp-for="refID_StateMst" class="col-sm-3">State <span style="color:red">*</span></label>
+                                <div class="col-sm-9">
+                                    <select asp-for="refID_StateMst" class="form-control" asp-items="@(new SelectList(ViewBag.vbSate,"Id","StateName"))">
+                                        <option value="0">Select</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <label asp-for="refID_CityMst" class="col-sm-3">City <span style="color:red">*</span></label>
+                                <div class="col-sm-9">
+                                    <select asp-for="refID_CityMst" class="form-control">
+                                        <option value="0">Select</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group text-center">
+                                <label class="col-sm-5"></label>
+                                <div class="col-sm-2">
+                                    <input type="checkbox" id="Agree" value="Yes"><label class="col-sm-3 pull-right">Agree</label>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="btnSubmit" class="btn btn-success" style="display:none" onclick="funAddRegister();"><i class="fa fa-floppy-o"></i> Submit</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-close"></i> Close</button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+<script type="text/javascript">
+    funGetCityFromState = (_Id) => {
+        var items = '';
+        $.ajax({
+            type: "POST",
+            url: "@Url.Action("GetCityListByState", "Registration")",
+            data: { paramStateId: _Id },
+            dataType: "json",
+            success: function (data) {
+                $.each(data, function (k, option) {
+                    /*if (_Id == 0) {*/
+                        items += "<option value = '" + option.Id + "'>" + option.CityName + " </option>";
+                    //}
+                    //else {
+
+                    //}
+                });
+                
+                $('#refID_CityMst').html(items);
+                var _SelectedVal = "@Model.refID_CityMst";
+                if (_SelectedVal != undefined && _SelectedVal != "" && _SelectedVal != null)
+                {
+
+                    $('#refID_CityMst option[value="@Model.refID_CityMst"]').attr("selected", "selected");
+
+                    /*$("#refID_CityMst").val(_SelectedVal);*/
+                    $("#refID_CityMst").trigger("change");
+                }
+            }
+        });
+    }
+
+    $(document).ready(function () {
+        if (@intStateId> 0) {
+            funGetCityFromState(@intStateId);
+        }
+        $('#refID_StateMst').change(function () {
+            var _StateId = $('#refID_StateMst').val();
+            funGetCityFromState(_StateId);
+        });
+
+            $("#Agree").click(function () {
+                if ($(this).is(":checked")) {
+                    $("#btnSubmit").show();
+                }
+                else {
+                    $("#btnSubmit").hide();
+                }
+            })
+
+
+        });
+
+
+
+    funIsNumber = (evt) => {
+        evt = (evt) ? evt : window.event;
+        var charCode = (evt.which) ? evt.which : evt.keyCode;
+        if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+            return false;
+        }
+        return true;
+    }
+
+    funAddRegister = () => {
+        var _Name = $("#Name").val();
+        var _Email = $("#Email").val();
+        var _State = $("#refID_StateMst").val();
+        var _City = $("#refID_CityMst").val();
+        var _Phone = $("#Phone").val();
+
+        if (_Name == "" || _Email == "" || _State == undefined || _City == undefined) {
+            toastr.warning('All mandatory fields is requeried!')
+            return false;
+        }
+        if (_Email != "") {
+            var regex = /^[A-Z0-9._%+-]+@@([A-Z0-9-]+\.)+[A-Z]{2,4}$/i;
+            if (!regex.test(_Email)) {
+                toastr.warning("Please enter valid email");
+                return false
+            }
+        }
+        if (_Phone != "") {
+            var regex = /^[6,7,8,9][0-9]{0,9}$/;
+            if (!regex.test(_Phone)) {
+                toastr.warning("Please enter valid phone no");
+                return false
+            }
+        }
+
+
+        $.ajax({
+            url: '@Url.Action("SaveRegistration", "Registration")',
+            data: $("#frmRegister").serialize(),
+            type: "POST",
+            success: function (res) {
+                if (res.Result == "OK") {
+                    toastr.success("Record save successfully");
+                    setTimeout(function () {
+                        location.href = '@Url.Action("Index", "Registration")';
+                    }, 2000);
+                }
+            },
+            error: function (xhr) {
+                toastr.error(xhr);
+            }
+        });
+
+    }
+</script>
